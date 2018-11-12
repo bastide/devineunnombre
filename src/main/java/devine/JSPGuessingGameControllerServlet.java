@@ -77,19 +77,36 @@ public class JSPGuessingGameControllerServlet extends HttpServlet {
 		}
 	}
 
+	private void updatePlayers(boolean addNew) {
+		ServletContext context = getServletContext();
+		int number = (Integer) context.getAttribute("numberOfPlayers");
+		number += addNew ? 1 : -1;
+		context.setAttribute("numberOfPlayers", number);
+	}
+	
+	
 	private void endGame(HttpSession session, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		session.invalidate();
+		updatePlayers(false);
 		showView("unknownPlayer.jsp", request, response);
 	}
 
 	private void startNewGame(HttpSession session, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		session.setAttribute("target", generator.nextInt(MAX + 1));
 		session.setAttribute("attempts", 0);
+		updatePlayers(true);
 		showView("guessNumber.jsp", request, response);
 	}
 
 	private void showView(String jsp, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		getServletConfig().getServletContext().getRequestDispatcher("/views/" + jsp).forward(request, response);
+	}
+
+	@Override
+	public void init() throws ServletException {
+		super.init();
+		getServletContext().setAttribute("numberOfPlayers", 0);
+		
 	}
 
 	// <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

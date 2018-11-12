@@ -7,9 +7,13 @@
 	</head>
 	<body>
 		<h1>Bienvenue dans notre jeu !</h1>
-		<form method="POST">
-			<label>Ton prénom : <input name="playerName" value="Iñtërnâtiônàlizætiøn"></label>
-			<input name="action" value="Connexion" type="SUBMIT">
-		</form>
-	</body>
+		<hr>
+		<h2>${applicationScope.numberOfPlayers} joueurs connectés</h2>
+		<hr>
+
+	<form method="POST">
+		<label>Ton prénom : <input name="playerName" value="Iñtërnâtiônàlizætiøn"></label>
+		<input name="action" value="Connexion" type="SUBMIT">
+	</form>
+</body>
 </html>

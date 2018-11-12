@@ -7,6 +7,10 @@
 		<title>JSP Number Guessing game</title>
 	</head>
 	<body onload="document.guessForm.guess.focus()">
+		<hr>
+		<h2>${applicationScope.numberOfPlayers} joueurs connectés</h2>
+		<hr>
+
 		<h3>Hello ${sessionScope.playerName}, Devine mon nombre</h3>
 		<c:if test="${not empty param.guess}">
 			Essai n° <b>${sessionScope.attempts}</b><br/>

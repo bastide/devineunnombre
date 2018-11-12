@@ -7,6 +7,10 @@
 		<title>JSP Number Guessing game</title>
 	</head>
 	<body>
+		<hr>
+		<h2>${applicationScope.numberOfPlayers} joueurs connectés</h2>
+		<hr>
+
 		<h3>Bravo, tu as gagné !</h3>
 		<form method="POST">
 			<input type="SUBMIT" name="action" value="Déconnexion"/>
