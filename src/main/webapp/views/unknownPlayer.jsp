@@ -12,7 +12,7 @@
 		<hr>
 
 	<form method="POST">
-		<label>Ton prénom : <input name="playerName" value="Iñtërnâtiônàlizætiøn"></label>
+		<label>Ton prénom : <input name="playerName"></label>
 		<input name="action" value="Connexion" type="SUBMIT">
 	</form>
 </body>
