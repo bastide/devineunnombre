@@ -18,10 +18,13 @@
 		</c:if>
 		<h2>je pense à un nombre compris entre 0 et 100</h2>
 		<form name="guessForm" method="POST" accept-charset="UTF-8" >
-			<label>Ta proposition : <input name="guess"></label> 
+			<label>Ta proposition : <input type="number" min="0" max="100" required name="guess"></label> 
 			<input type="SUBMIT" name="action" value="Deviner"><br/>
-			<input type="SUBMIT" name="action" value="Déconnexion"></form>
 		</form>
+		<form method="POST">
+			<input type="SUBMIT" name="action" value="Déconnexion">
+		</form>
+
 		<hr>
 		<c:if test="${not empty applicationScope.bestPlayer}">
 			<h2>Score à battre : ${applicationScope.bestScore} essais par ${applicationScope.bestPlayer}</h2>

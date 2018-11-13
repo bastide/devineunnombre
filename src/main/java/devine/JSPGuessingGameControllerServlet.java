@@ -28,18 +28,15 @@ public class JSPGuessingGameControllerServlet extends HttpServlet {
 	protected void processRequest(HttpServletRequest request, HttpServletResponse response)
 		throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
-		HttpSession session = request.getSession();
 		if (actionIs(request, "Rejouer")) {
-			startNewGame(session, request, response);
+			playNewGame(request, response);
 		} else if (actionIs(request, "Déconnexion")) {
-			endGame(session, request, response);
+			endGame(request, response);
 		} else if (actionIs(request, "Connexion")) {
-			String playerName = request.getParameter("playerName");
-			session.setAttribute("playerName", playerName);
-			startNewGame(session, request, response);
-		} else if (actionIs(request, "Deviner")) {
-			guessNumber(session, request, response);
-		} else if (null == session.getAttribute("playerName")) {
+			newPlayer(request, response);
+		} else if (actionIs(request, "Deviner") && (null != request.getSession(false))) {
+			guessNumber(request, response);
+		} else {
 			showView("unknownPlayer.jsp", request, response);
 		}
 	}
@@ -48,7 +45,15 @@ public class JSPGuessingGameControllerServlet extends HttpServlet {
 		return action.equals(request.getParameter("action"));
 	}
 
-	private void guessNumber(HttpSession session, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	private void newPlayer(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+			HttpSession session = request.getSession();
+			String playerName = request.getParameter("playerName");
+			session.setAttribute("playerName", playerName);
+			playNewGame(request, response);
+		
+	}
+	private void guessNumber(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		HttpSession session = request.getSession();
 		int guess = Integer.parseInt(request.getParameter("guess"));
 		int target = (Integer) session.getAttribute("target");
 		int attempts = (Integer) session.getAttribute("attempts");
@@ -63,7 +68,7 @@ public class JSPGuessingGameControllerServlet extends HttpServlet {
 		}
 	}
 
-	private void updateBestScore(String playerName, int attempts) {
+	private void updateBestScore(String playerName, int attempts) {	
 		ServletContext context = getServletContext();
 		if (context.getAttribute("bestPlayer") != null) {
 			int bestScore = (Integer) context.getAttribute("bestScore");
@@ -74,24 +79,29 @@ public class JSPGuessingGameControllerServlet extends HttpServlet {
 		} else {
 			context.setAttribute("bestPlayer", playerName);
 			context.setAttribute("bestScore", attempts);
-		}
+		}	
 	}
 
 	private void updatePlayers(boolean addNew) {
+	// Il est préférable d'utiliser les web listeners pour faire ça
+	/*	
 		ServletContext context = getServletContext();
 		int number = (Integer) context.getAttribute("numberOfPlayers");
 		number += addNew ? 1 : -1;
 		context.setAttribute("numberOfPlayers", number);
+	*/
 	}
 	
 	
-	private void endGame(HttpSession session, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	private void endGame(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		HttpSession session = request.getSession();
 		session.invalidate();
 		updatePlayers(false);
 		showView("unknownPlayer.jsp", request, response);
 	}
 
-	private void startNewGame(HttpSession session, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	private void playNewGame(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		HttpSession session = request.getSession();
 		session.setAttribute("target", generator.nextInt(MAX + 1));
 		session.setAttribute("attempts", 0);
 		updatePlayers(true);
@@ -105,7 +115,8 @@ public class JSPGuessingGameControllerServlet extends HttpServlet {
 	@Override
 	public void init() throws ServletException {
 		super.init();
-		getServletContext().setAttribute("numberOfPlayers", 0);
+		// Utiliser plutôt un ContextListener
+		//getServletContext().setAttribute("numberOfPlayers", 0);
 		
 	}
 
