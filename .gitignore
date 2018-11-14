@@ -1,5 +1,3 @@
 target
-deby.log
-embedded_sample
-tomcat.5000/
-tomcat.8080/
+derby.log
+
