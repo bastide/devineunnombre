@@ -28,13 +28,15 @@ public class JSPGuessingGameControllerServlet extends HttpServlet {
 	protected void processRequest(HttpServletRequest request, HttpServletResponse response)
 		throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
-		if (actionIs(request, "Rejouer")) {
-			playNewGame(request, response);
-		} else if (actionIs(request, "Déconnexion")) {
+		if (actionIs(request, "Déconnexion")) {
 			endGame(request, response);
 		} else if (actionIs(request, "Connexion")) {
 			newPlayer(request, response);
-		} else if (actionIs(request, "Deviner") && (null != request.getSession(false))) {
+		// On gère les cas ou la session s'est terminée pour cause de timeout
+		// cf. web.xml
+		} else 	if (actionIs(request, "Rejouer")  && (null != request.getSession(false))) {
+			playNewGame(request, response);
+		} else if (actionIs(request, "Deviner")   && (null != request.getSession(false))) {
 			guessNumber(request, response);
 		} else {
 			showView("unknownPlayer.jsp", request, response);
